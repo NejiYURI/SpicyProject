@@ -12,4 +12,6 @@ public class GameEventManager : MonoBehaviour
         instance = this;
     }
     public UnityEvent GameStart;
+
+    public UnityEvent<string,Color> GameOver;
 }

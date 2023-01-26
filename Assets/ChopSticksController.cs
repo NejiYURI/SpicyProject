@@ -39,7 +39,7 @@ public class ChopSticksController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        Cursor.lockState = CursorLockMode.Locked;
+       
         this.rg = GetComponent<Rigidbody2D>();
         playerInput.ChopStick.Click.performed += _ => ChopStickGet();
         if (IgnoreCollider != null && SettingCollider != null)
@@ -50,6 +50,7 @@ public class ChopSticksController : MonoBehaviour
         if (GameEventManager.instance != null)
         {
             GameEventManager.instance.GameStart.AddListener(GameStart);
+            GameEventManager.instance.GameOver.AddListener(GameOverFunction);
         }
     }
     private void OnEnable()
@@ -92,8 +93,18 @@ public class ChopSticksController : MonoBehaviour
             if (hitObj[0].transform.tag.Equals("Chili"))
             {
                 Debug.Log("Got it!");
+                if (MainGameController.mainController != null)
+                {
+                    MainGameController.mainController.ChopsticksWin();
+                   
+                }
             }
         }
+    }
+
+    public void GameOverFunction(string i_showTxt, Color i_color)
+    {
+        this.CanMove = false;
     }
 
     private void OnDrawGizmosSelected()

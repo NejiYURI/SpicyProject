@@ -37,6 +37,7 @@ public class ChiliPepperController : MonoBehaviour
         if (GameEventManager.instance != null)
         {
             GameEventManager.instance.GameStart.AddListener(GameStart);
+            GameEventManager.instance.GameOver.AddListener(GameOverFunction);
         }
     }
 
@@ -56,6 +57,7 @@ public class ChiliPepperController : MonoBehaviour
     }
     private void FixedUpdate()
     {
+        if (!CanMove) return;
         this.rg.AddForce(Movement * MoveSpeed);
         this.rg.velocity = new Vector2(Mathf.Clamp(this.rg.velocity.x, -1 * MoveSpeedLimit, MoveSpeedLimit), Mathf.Clamp(this.rg.velocity.y, -1 * MoveSpeedLimit, MoveSpeedLimit));
     }
@@ -63,5 +65,10 @@ public class ChiliPepperController : MonoBehaviour
     void GameStart()
     {
         this.CanMove = true;
+    }
+
+    public void GameOverFunction(string i_showTxt, Color i_color)
+    {
+        this.CanMove = false;
     }
 }
