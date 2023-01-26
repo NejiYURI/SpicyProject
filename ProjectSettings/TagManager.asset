@@ -1,0 +1,54 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!78 &1
+TagManager:
+  serializedVersion: 2
+  tags:
+  - Chili
+  - Chopsticks
+  layers:
+  - Default
+  - TransparentFX
+  - Ignore Raycast
+  - 
+  - Water
+  - UI
+  - ChopStick
+  - ChiliPepper
+  - Foods
+  - Food_Chili
+  - Food_Chop
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  m_SortingLayers:
+  - name: Default
+    uniqueID: 0
+    locked: 0
+  - name: ChilliPepper
+    uniqueID: 2775694873
+    locked: 0
+  - name: Foods
+    uniqueID: 2906759169
+    locked: 0
+  - name: ChopSticks
+    uniqueID: 1751779207
+    locked: 0
