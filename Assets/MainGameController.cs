@@ -5,6 +5,12 @@ using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using static UnityEditor.Progress;
 
+[System.Serializable]
+public class SpawnData
+{
+    public int Rate;
+    public List<FoodData> foodDatas;
+}
 public class MainGameController : MonoBehaviour
 {
     public static MainGameController mainController;
@@ -22,11 +28,13 @@ public class MainGameController : MonoBehaviour
     public ChiliPepperController ChiliPepper;
     public ChopSticksController ChopSticks;
 
+    public List<SpawnData> spawnDatas;
 
     [SerializeField]
     private float SpicyRate_Val;
 
     private Coroutine SpicyRateCoroutine;
+
 
     private void Awake()
     {
@@ -42,16 +50,17 @@ public class MainGameController : MonoBehaviour
         {
             for (int cnt = 0; cnt < SpawnNum; cnt++)
             {
-                float RandomRange = Random.Range(0, SpawnRadius);
+                float RandomRange = Random.Range(2, SpawnRadius);
                 float angle = 2 * Mathf.PI * Random.Range(0f, 1f);
                 float x = RandomRange * Mathf.Cos(angle);
                 float y = RandomRange * Mathf.Sin(angle);
                 Vector3 Pos = new Vector3(x, y, 0);
                 GameObject obj = Instantiate(FoodObj, Pos, Quaternion.Euler(0, 0, Random.Range(0.0f, 360.0f)));
-                obj.transform.localScale = new Vector3(Random.Range(0.5f, 1.5f), Random.Range(0.5f, 1.5f), 1f);
+                //obj.transform.localScale = new Vector3(Random.Range(0.5f, 1.5f), Random.Range(0.5f, 1.5f), 1f);
                 if (!LayerCollider.ContainsKey(layercnt)) LayerCollider.Add(layercnt, new List<Collider2D>());
                 if (obj.GetComponent<FoodScript>() != null)
                 {
+                    obj.GetComponent<FoodScript>().FoodSetup(GetRandFood());
                     LayerCollider[layercnt].Add(obj.GetComponent<FoodScript>().ColliderObj);
                 }
             }
@@ -78,6 +87,20 @@ public class MainGameController : MonoBehaviour
             ChiliPepper.SetCharacterAngle(ChiliAngle);
             ChopSticks.SetCharacterAngle(ChopsticksAngle);
         }
+    }
+
+    FoodData GetRandFood()
+    {
+        int num = Random.Range(1, 101);
+        int index = 0;
+        foreach (var item in spawnDatas)
+        {
+            index += item.Rate;
+            if (num <= index)
+                return item.foodDatas[Random.Range(0, item.foodDatas.Count)];
+        }
+
+        return null;
     }
 
     public void ChopsticksWin()

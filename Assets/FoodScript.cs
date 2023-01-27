@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+
+
 public class FoodScript : MonoBehaviour
 {
     public Collider2D ColliderObj;
@@ -9,6 +11,8 @@ public class FoodScript : MonoBehaviour
     private Rigidbody2D rg;
 
     public SpriteRenderer FoodSprite;
+    public SpriteRenderer FoodSprite_2;
+
 
     public float PushForce = 20f;
 
@@ -21,6 +25,16 @@ public class FoodScript : MonoBehaviour
             {
                 Physics2D.IgnoreCollision(ColliderObj, item);
             }
+        }
+    }
+
+    public void FoodSetup(FoodData foodData)
+    {
+        foreach (var collider in GetComponents<PolygonCollider2D>())
+        {
+            collider.SetPath(0, foodData.PolygonPointList);
+            FoodSprite.sprite = foodData.ImageData;
+            FoodSprite_2.sprite = foodData.ImageData;
         }
     }
     private void OnTriggerEnter2D(Collider2D collision)

@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f7639d9f1842d0645a5e43c6fda03e7e, type: 3}
+  m_Name: Egg
+  m_EditorClassIdentifier: 
+  ImageData: {fileID: 21300000, guid: 01756fed5a683bc41a8c1ebf214df2b0, type: 3}
+  PolygonPointList:
+  - {x: 0.027411342, y: 0.9455812}
+  - {x: -0.6423907, y: 0.6184542}
+  - {x: -0.9267199, y: -0.10004005}
+  - {x: -0.7278135, y: -0.6468229}
+  - {x: -0.253685, y: -0.95335543}
+  - {x: 0.27700728, y: -0.9455811}
+  - {x: 0.6952086, y: -0.71027434}
+  - {x: 0.9692463, y: -0.1532956}
+  - {x: 0.6734872, y: 0.61906826}
