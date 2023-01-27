@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using static UnityEditor.Progress;
 
 public class MainGameController : MonoBehaviour
 {
@@ -14,8 +15,14 @@ public class MainGameController : MonoBehaviour
     public int SpawnNum;
     public GameObject FoodObj;
 
-    public Image SpicyRateBar;
+    //public Image SpicyRateBar;
+    public SpriteRenderer SpicyRateBar;
     public float SpicyRate;
+
+    public ChiliPepperController ChiliPepper;
+    public ChopSticksController ChopSticks;
+
+
     [SerializeField]
     private float SpicyRate_Val;
 
@@ -30,20 +37,46 @@ public class MainGameController : MonoBehaviour
     {
         Cursor.lockState = CursorLockMode.Locked;
         StartCoroutine(StartCounter());
-        for (int cnt = 0; cnt < SpawnNum; cnt++)
+        Dictionary<int, List<Collider2D>> LayerCollider = new Dictionary<int, List<Collider2D>>();
+        for (int layercnt = 0; layercnt < 2; layercnt++)
         {
-            float RandomRange = Random.Range(0, SpawnRadius);
-            float angle = 2 * Mathf.PI * Random.Range(0f, 1f);
-            float x = RandomRange * Mathf.Cos(angle);
-            float y = RandomRange * Mathf.Sin(angle);
-            Vector3 Pos = new Vector3(x, y, 0);
-            GameObject obj = Instantiate(FoodObj, Pos, Quaternion.Euler(0, 0, Random.Range(0.0f, 360.0f)));
-            obj.transform.localScale = new Vector3(Random.Range(0.5f, 1.5f), Random.Range(0.5f, 1.5f), 1f);
+            for (int cnt = 0; cnt < SpawnNum; cnt++)
+            {
+                float RandomRange = Random.Range(0, SpawnRadius);
+                float angle = 2 * Mathf.PI * Random.Range(0f, 1f);
+                float x = RandomRange * Mathf.Cos(angle);
+                float y = RandomRange * Mathf.Sin(angle);
+                Vector3 Pos = new Vector3(x, y, 0);
+                GameObject obj = Instantiate(FoodObj, Pos, Quaternion.Euler(0, 0, Random.Range(0.0f, 360.0f)));
+                obj.transform.localScale = new Vector3(Random.Range(0.5f, 1.5f), Random.Range(0.5f, 1.5f), 1f);
+                if (!LayerCollider.ContainsKey(layercnt)) LayerCollider.Add(layercnt, new List<Collider2D>());
+                if (obj.GetComponent<FoodScript>() != null)
+                {
+                    LayerCollider[layercnt].Add(obj.GetComponent<FoodScript>().ColliderObj);
+                }
+            }
         }
+        foreach (var item in LayerCollider[0])
+        {
+            foreach (var item2 in LayerCollider[1])
+            {
+                Physics2D.IgnoreCollision(item, item2);
+            }
+        }
+
         SpicyRate_Val = 0f;
         if (SpicyRateBar != null)
         {
-            SpicyRateBar.fillAmount = SpicyRate_Val / SpicyRate;
+            //SpicyRateBar.fillAmount = SpicyRate_Val / SpicyRate;
+            SpicyRateBar.color = new Color(SpicyRateBar.color.r, SpicyRateBar.color.g, SpicyRateBar.color.b, SpicyRate_Val / SpicyRate);
+        }
+        if (ChiliPepper != null && ChopSticks != null)
+        {
+            float ChiliAngle = Random.Range(0, 360);
+            float ChopsticksAngle = Random.Range(0, 360);
+            while (ChopsticksAngle == ChiliAngle) ChopsticksAngle = Random.Range(0, 360);
+            ChiliPepper.SetCharacterAngle(ChiliAngle);
+            ChopSticks.SetCharacterAngle(ChopsticksAngle);
         }
     }
 
@@ -89,7 +122,8 @@ public class MainGameController : MonoBehaviour
             SpicyRate_Val += Time.fixedDeltaTime;
             if (SpicyRateBar != null)
             {
-                SpicyRateBar.fillAmount = SpicyRate_Val / SpicyRate;
+                //SpicyRateBar.fillAmount = SpicyRate_Val / SpicyRate;
+                SpicyRateBar.color = new Color(SpicyRateBar.color.r, SpicyRateBar.color.g, SpicyRateBar.color.b, SpicyRate_Val / SpicyRate);
             }
         }
         ChiliWin();

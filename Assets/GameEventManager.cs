@@ -13,5 +13,5 @@ public class GameEventManager : MonoBehaviour
     }
     public UnityEvent GameStart;
 
-    public UnityEvent<string,Color> GameOver;
+    public UnityEvent<string, Color> GameOver;
 }

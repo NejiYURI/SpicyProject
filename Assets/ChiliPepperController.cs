@@ -20,6 +20,8 @@ public class ChiliPepperController : MonoBehaviour
     private bool CanMove;
     private Rigidbody2D rg;
 
+    public Camera FollowCam;
+
     private void Awake()
     {
         playerInput = new PlayerInput();
@@ -58,7 +60,7 @@ public class ChiliPepperController : MonoBehaviour
     private void FixedUpdate()
     {
         if (!CanMove) return;
-        this.rg.AddForce(Movement * MoveSpeed);
+        this.rg.AddForce(ForceConverter(Movement * MoveSpeed, FollowCam.transform.eulerAngles.z));
         this.rg.velocity = new Vector2(Mathf.Clamp(this.rg.velocity.x, -1 * MoveSpeedLimit, MoveSpeedLimit), Mathf.Clamp(this.rg.velocity.y, -1 * MoveSpeedLimit, MoveSpeedLimit));
     }
 
@@ -70,5 +72,23 @@ public class ChiliPepperController : MonoBehaviour
     public void GameOverFunction(string i_showTxt, Color i_color)
     {
         this.CanMove = false;
+    }
+
+    Vector2 ForceConverter(Vector2 i_target, float i_angle)
+    {
+        float sin = Mathf.Sin(i_angle * Mathf.Deg2Rad);
+        float cos = Mathf.Cos(i_angle * Mathf.Deg2Rad);
+
+        float tx = i_target.x;
+        float ty = i_target.y;
+        i_target.x = (cos * tx) - (sin * ty);
+        i_target.y = (sin * tx) + (cos * ty);
+        return i_target;
+    }
+
+    public void SetCharacterAngle(float i_angle)
+    {
+        this.transform.rotation = Quaternion.Euler(0,0, i_angle);
+        FollowCam.transform.rotation = Quaternion.Euler(0, 0, i_angle);
     }
 }
