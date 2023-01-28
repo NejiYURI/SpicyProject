@@ -17,6 +17,6 @@ public class CounterScript : MonoBehaviour
     {
         this.transform.LeanScale(Vector3.zero, 0f);
         CounterTxt.text = counterValue;
-        this.transform.LeanScale(Vector3.one, 0.2f);
+        this.transform.LeanScale(new Vector3(1.5f, 1.5f, 1.5f), 0.2f);
     }
 }

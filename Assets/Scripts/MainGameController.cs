@@ -111,7 +111,7 @@ public class MainGameController : MonoBehaviour
         {
             StopCoroutine(SpicyRateCoroutine);
             Cursor.lockState = CursorLockMode.None;
-            GameEventManager.instance.GameOver.Invoke("Chopsticks Win!", Color.black);
+            GameEventManager.instance.GameOver.Invoke(true);
         }
     }
 
@@ -120,12 +120,13 @@ public class MainGameController : MonoBehaviour
         if (GameEventManager.instance != null)
         {
             Cursor.lockState = CursorLockMode.None;
-            GameEventManager.instance.GameOver.Invoke("ChiliPepper Win!", Color.red);
+            GameEventManager.instance.GameOver.Invoke(false);
         }
     }
 
     public void RestartLevel()
     {
+        if (JoyconManager.Instance != null) JoyconManager.Instance.DetachJoy();
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 
@@ -151,11 +152,6 @@ public class MainGameController : MonoBehaviour
         {
             yield return new WaitForFixedUpdate();
             SpicyRate_Val += Time.fixedDeltaTime;
-            //if (SpicyRateBar != null)
-            //{
-            //    //SpicyRateBar.fillAmount = SpicyRate_Val / SpicyRate;
-            //    //SpicyRateBar.color = new Color(SpicyRateBar.color.r, SpicyRateBar.color.g, SpicyRateBar.color.b, SpicyRate_Val / SpicyRate);
-            //}
 
             if (GameEventManager.instance != null) GameEventManager.instance.SpicyRate.Invoke(SpicyRate_Val, SpicyRate);
         }

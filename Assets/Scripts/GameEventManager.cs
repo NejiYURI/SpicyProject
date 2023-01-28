@@ -13,7 +13,7 @@ public class GameEventManager : MonoBehaviour
     }
     public UnityEvent GameStart;
 
-    public UnityEvent<string, Color> GameOver;
+    public UnityEvent<bool> GameOver;
 
     public UnityEvent<float,float> SpicyRate;
 }

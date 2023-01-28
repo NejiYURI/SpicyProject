@@ -31,6 +31,9 @@ public class ChiliPepperController : MonoBehaviour
 
     private float ParticleSize;
 
+    public bool IsJoycon;
+    public JoyconInputManager joyconInput;
+
     private void Awake()
     {
         playerInput = new PlayerInput();
@@ -66,7 +69,17 @@ public class ChiliPepperController : MonoBehaviour
     void Update()
     {
         if (!CanMove) return;
-        Movement = playerInput.ChiliPepper.KeyboardInput.ReadValue<Vector2>();
+        if (!IsJoycon || joyconInput == null)
+        {
+            Movement = playerInput.ChiliPepper.KeyboardInput.ReadValue<Vector2>();
+        }
+        else
+        {
+            Vector3 joyconV = joyconInput.GyroVector_Delta;
+            float JoyX = Mathf.Abs(joyconV.y / 400f) >= 1f ? Mathf.Clamp(joyconV.y / 400f, -1, 1) : 0;
+            float JoyY = Mathf.Abs(joyconV.x / 400f) >= 1f ? Mathf.Clamp(joyconV.x / 400f, -1, 1) : 0;
+            Movement = new Vector2(JoyX, JoyY);
+        }
         float DeltaValue = Mathf.Abs(Vector2.Distance(LastMovement, Movement));
         if (DeltaValue > 0.5f)
         {
@@ -91,7 +104,7 @@ public class ChiliPepperController : MonoBehaviour
         this.CanMove = true;
     }
 
-    public void GameOverFunction(string i_showTxt, Color i_color)
+    public void GameOverFunction(bool IsChop)
     {
         this.CanMove = false;
     }

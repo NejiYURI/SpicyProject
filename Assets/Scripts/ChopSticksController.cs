@@ -30,6 +30,9 @@ public class ChopSticksController : MonoBehaviour
     private Rigidbody2D rg;
     private PlayerInput playerInput;
 
+    public bool IsJoycon;
+    public JoyconInputManager joyconInput;
+
 
     [SerializeField]
     private Vector2 MouseDeltaPos;
@@ -73,7 +76,20 @@ public class ChopSticksController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        MouseDeltaPos = playerInput.ChopStick.MouseInput.ReadValue<Vector2>();
+        if (!IsJoycon)
+        {
+            MouseDeltaPos = playerInput.ChopStick.MouseInput.ReadValue<Vector2>();
+        }
+        else
+        {
+            Vector3 joyconV = joyconInput.GyroVector_Delta;
+            float JoyX = Mathf.Abs(joyconV.y / 200f) >= 0.6f ? Mathf.Clamp(joyconV.y / 200f, -1, 1) : 0;
+            float JoyY = Mathf.Abs(joyconV.z / 200f) >= 0.6f ? Mathf.Clamp(joyconV.z / 200f, -1, 1) : 0;
+            MouseDeltaPos = new Vector2(JoyX, JoyY)*-10f;
+
+            if (!this.GameStarted || !this.CanMove) return;
+            if (joyconInput.accel.x <= -3f) ChopStickGet();
+        }
     }
     private void FixedUpdate()
     {
@@ -124,7 +140,7 @@ public class ChopSticksController : MonoBehaviour
         
     }
 
-    public void GameOverFunction(string i_showTxt, Color i_color)
+    public void GameOverFunction(bool IsChop)
     {
         this.GameStarted = false;
     }
