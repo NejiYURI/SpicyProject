@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f7639d9f1842d0645a5e43c6fda03e7e, type: 3}
+  m_Name: Shrimp
+  m_EditorClassIdentifier: 
+  ImageData: {fileID: 21300000, guid: 006d9a13b89158a48822a58322add61b, type: 3}
+  PolygonPointList:
+  - {x: -0.17138568, y: 0.9611188}
+  - {x: -0.80559385, y: 0.43707415}
+  - {x: -0.4751035, y: -0.17223755}
+  - {x: -0.16490552, y: -0.88983655}
+  - {x: 0.18434608, y: -0.9935198}
+  - {x: 0.9481583, y: -0.19082633}
+  - {x: 0.83151466, y: 0.41115323}
+  - {x: 0.1713857, y: 0.9611187}

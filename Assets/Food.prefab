@@ -125,7 +125,7 @@ MonoBehaviour:
   ColliderObj: {fileID: 7817202674948256752}
   FoodSprite: {fileID: 6773289019288208354}
   FoodSprite_2: {fileID: 6773289020206814271}
-  PushForce: 5
+  PushForce: 8
 --- !u!60 &7817202674948256752
 PolygonCollider2D:
   m_ObjectHideFlags: 0

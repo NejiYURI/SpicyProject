@@ -14,13 +14,22 @@ public class ChiliPepperController : MonoBehaviour
     public Collider2D SettingCollider;
 
     private PlayerInput playerInput;
+
     [SerializeField]
     private Vector2 Movement;
+
+    [SerializeField]
+    private Vector2 LastMovement;
+
     [SerializeField]
     private bool CanMove;
     private Rigidbody2D rg;
 
     public Camera FollowCam;
+
+    public ParticleSystem ChiliParticle;
+
+    private float ParticleSize;
 
     private void Awake()
     {
@@ -41,6 +50,7 @@ public class ChiliPepperController : MonoBehaviour
             GameEventManager.instance.GameStart.AddListener(GameStart);
             GameEventManager.instance.GameOver.AddListener(GameOverFunction);
         }
+        ParticleSize = 0;
     }
 
     private void OnEnable()
@@ -55,7 +65,19 @@ public class ChiliPepperController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (!CanMove) return;
         Movement = playerInput.ChiliPepper.KeyboardInput.ReadValue<Vector2>();
+        float DeltaValue = Mathf.Abs(Vector2.Distance(LastMovement, Movement));
+        if (DeltaValue > 0.5f)
+        {
+            ParticleSize = 0;
+        }
+        ParticleSize += (Time.deltaTime * 2);
+        if (ChiliParticle != null)
+        {
+            var pmain = ChiliParticle.main;
+            pmain.startSize = Mathf.Clamp(ParticleSize, 0, 10);
+        }
     }
     private void FixedUpdate()
     {
@@ -88,7 +110,7 @@ public class ChiliPepperController : MonoBehaviour
 
     public void SetCharacterAngle(float i_angle)
     {
-        this.transform.rotation = Quaternion.Euler(0,0, i_angle);
+        this.transform.rotation = Quaternion.Euler(0, 0, i_angle);
         FollowCam.transform.rotation = Quaternion.Euler(0, 0, i_angle);
     }
 }

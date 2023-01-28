@@ -24,6 +24,8 @@ public class ChopSticksController : MonoBehaviour
 
     public Camera FollowCam;
 
+    public Animator ChopsticksAnimator;
+
 
     private Rigidbody2D rg;
     private PlayerInput playerInput;
@@ -31,6 +33,9 @@ public class ChopSticksController : MonoBehaviour
 
     [SerializeField]
     private Vector2 MouseDeltaPos;
+
+    [SerializeField]
+    private bool GameStarted;
 
     [SerializeField]
     private bool CanMove;
@@ -72,7 +77,7 @@ public class ChopSticksController : MonoBehaviour
     }
     private void FixedUpdate()
     {
-        if (!this.CanMove) return;
+        if (!this.GameStarted || !this.CanMove) return;
         this.rg.AddForce(ForceConverter(MouseDeltaPos * MoveSpeed, FollowCam.transform.eulerAngles.z));
         this.rg.velocity = new Vector2(Mathf.Clamp(this.rg.velocity.x, -1 * MoveSpeedLimit, MoveSpeedLimit), Mathf.Clamp(this.rg.velocity.y, -1 * MoveSpeedLimit, MoveSpeedLimit));
 
@@ -84,11 +89,13 @@ public class ChopSticksController : MonoBehaviour
 
     void GameStart()
     {
+        this.GameStarted = true;
         this.CanMove = true;
     }
 
     void ChopStickGet()
     {
+        if (!this.GameStarted || !this.CanMove) return;
         Collider2D[] hitObj = Physics2D.OverlapCircleAll(this.transform.position, ClickRange, CollisionDetect);
         if (hitObj.Count() == 1)
         {
@@ -98,15 +105,28 @@ public class ChopSticksController : MonoBehaviour
                 if (MainGameController.mainController != null)
                 {
                     MainGameController.mainController.ChopsticksWin();
-                   
                 }
             }
         }
+        else if (hitObj.Count() > 0)
+        {
+            foreach (var obj in hitObj)
+            {
+                if (!obj.transform.tag.Equals("Chili") && obj.GetComponent<FoodScript>()!=null)
+                {
+                    obj.GetComponent<FoodScript>().FoodPickUp();
+                    break;
+                }
+            }
+        }
+        if (this.rg!=null) this.rg.velocity = Vector2.zero;
+        StartCoroutine(StopCounter());
+        
     }
 
     public void GameOverFunction(string i_showTxt, Color i_color)
     {
-        this.CanMove = false;
+        this.GameStarted = false;
     }
 
     Vector2 ForceConverter(Vector2 i_target, float i_angle)
@@ -125,6 +145,17 @@ public class ChopSticksController : MonoBehaviour
     {
         this.transform.rotation = Quaternion.Euler(0, 0, i_angle);
         FollowCam.transform.rotation = Quaternion.Euler(0, 0, i_angle);
+    }
+
+    IEnumerator StopCounter()
+    {
+        this.CanMove = false;
+        if (ChopsticksAnimator != null)
+        {
+            ChopsticksAnimator.SetTrigger("ChopsticksGrab");
+        }
+        yield return new WaitForSeconds(0.5f);
+        this.CanMove = true;
     }
 
     private void OnDrawGizmosSelected()

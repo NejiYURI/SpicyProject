@@ -30,6 +30,8 @@ public class MainGameController : MonoBehaviour
 
     public List<SpawnData> spawnDatas;
 
+    public CounterScript counterControl;
+
     [SerializeField]
     private float SpicyRate_Val;
 
@@ -129,7 +131,13 @@ public class MainGameController : MonoBehaviour
 
     IEnumerator StartCounter()
     {
-        yield return new WaitForSeconds(CountDownSecond);
+        int TmpCnt = (int)CountDownSecond;
+        for (int i = TmpCnt; i > 0; i--)
+        {
+            if (counterControl != null) counterControl.CounterSet(i.ToString("#"));
+            yield return new WaitForSeconds(1);
+        }
+
         if (GameEventManager.instance != null)
         {
             GameEventManager.instance.GameStart.Invoke();
@@ -143,11 +151,13 @@ public class MainGameController : MonoBehaviour
         {
             yield return new WaitForFixedUpdate();
             SpicyRate_Val += Time.fixedDeltaTime;
-            if (SpicyRateBar != null)
-            {
-                //SpicyRateBar.fillAmount = SpicyRate_Val / SpicyRate;
-                SpicyRateBar.color = new Color(SpicyRateBar.color.r, SpicyRateBar.color.g, SpicyRateBar.color.b, SpicyRate_Val / SpicyRate);
-            }
+            //if (SpicyRateBar != null)
+            //{
+            //    //SpicyRateBar.fillAmount = SpicyRate_Val / SpicyRate;
+            //    //SpicyRateBar.color = new Color(SpicyRateBar.color.r, SpicyRateBar.color.g, SpicyRateBar.color.b, SpicyRate_Val / SpicyRate);
+            //}
+
+            if (GameEventManager.instance != null) GameEventManager.instance.SpicyRate.Invoke(SpicyRate_Val, SpicyRate);
         }
         ChiliWin();
     }
