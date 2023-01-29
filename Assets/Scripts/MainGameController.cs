@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
-using static UnityEditor.Progress;
 
 [System.Serializable]
 public class SpawnData
@@ -37,7 +36,7 @@ public class MainGameController : MonoBehaviour
 
     private Coroutine SpicyRateCoroutine;
 
-
+    public GameObject JoyconControl;
     private void Awake()
     {
         mainController = this;
@@ -80,6 +79,20 @@ public class MainGameController : MonoBehaviour
         {
             //SpicyRateBar.fillAmount = SpicyRate_Val / SpicyRate;
             SpicyRateBar.color = new Color(SpicyRateBar.color.r, SpicyRateBar.color.g, SpicyRateBar.color.b, SpicyRate_Val / SpicyRate);
+        }
+        if (GameSettingScript.instance != null)
+        {
+            if (GameSettingScript.instance.IsJoycon)
+            {
+                JoyconControl.SetActive(true);
+            }
+            else
+            {
+                Destroy(JoyconControl);
+            }
+            if (ChiliPepper != null) ChiliPepper.IsJoycon = GameSettingScript.instance.IsJoycon;
+            if (ChopSticks != null) ChopSticks.IsJoycon = GameSettingScript.instance.IsJoycon;
+
         }
         if (ChiliPepper != null && ChopSticks != null)
         {
@@ -128,6 +141,12 @@ public class MainGameController : MonoBehaviour
     {
         if (JoyconManager.Instance != null) JoyconManager.Instance.DetachJoy();
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+    }
+
+    public void ToTitle()
+    {
+        if (JoyconManager.Instance != null) JoyconManager.Instance.DetachJoy();
+        SceneManager.LoadScene("Title");
     }
 
     IEnumerator StartCounter()

@@ -15,6 +15,9 @@ public class BackGroundController : MonoBehaviour
 
     public GameObject Bubble;
 
+    public GameObject SpicyParticle;
+
+
     public float SpawnDuration;
 
     private void Start()
@@ -30,6 +33,8 @@ public class BackGroundController : MonoBehaviour
     {
         if (Ratio >= 0.7f)
         {
+            if (SpicyParticle != null && !SpicyParticle.activeSelf)
+                SpicyParticle.SetActive(true);
             SpawnCounter += Time.deltaTime;
             if (SpawnCounter >= SpawnDuration / Ratio)
             {
@@ -45,7 +50,7 @@ public class BackGroundController : MonoBehaviour
         {
             Ratio = (cur_val / (Max_val * 0.8f));
             SoupBg.color = new Color(SoupBg.color.r, SoupBg.color.g, SoupBg.color.b, Ratio);
-            
+
         }
     }
 

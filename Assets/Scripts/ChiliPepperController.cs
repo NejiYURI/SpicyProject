@@ -75,10 +75,12 @@ public class ChiliPepperController : MonoBehaviour
         }
         else
         {
-            Vector3 joyconV = joyconInput.GyroVector_Delta;
-            float JoyX = Mathf.Abs(joyconV.y / 400f) >= 1f ? Mathf.Clamp(joyconV.y / 400f, -1, 1) : 0;
-            float JoyY = Mathf.Abs(joyconV.x / 400f) >= 1f ? Mathf.Clamp(joyconV.x / 400f, -1, 1) : 0;
-            Movement = new Vector2(JoyX, JoyY);
+            Vector3 joyconV = joyconInput.GyroQuaternion_Delta;
+            float JoyX = Mathf.Abs(joyconV.y) >= 30f ? Mathf.Clamp(joyconV.y / 90f, -1, 1) : 0;
+            float JoyY = Mathf.Abs(joyconV.z) >= 30f ? Mathf.Clamp(joyconV.z / 90f, -1, 1) : 0;
+            //float JoyX = Mathf.Abs(joyconV.y / 400f) >= 1f ? Mathf.Clamp(joyconV.y / 400f, -1, 1) : 0;
+            //float JoyY = Mathf.Abs(joyconV.x / 400f) >= 1f ? Mathf.Clamp(joyconV.x / 400f, -1, 1) : 0;
+            Movement = new Vector2(JoyX, JoyY) * -1f;
         }
         float DeltaValue = Mathf.Abs(Vector2.Distance(LastMovement, Movement));
         if (DeltaValue > 0.5f)
@@ -119,6 +121,11 @@ public class ChiliPepperController : MonoBehaviour
         i_target.x = (cos * tx) - (sin * ty);
         i_target.y = (sin * tx) + (cos * ty);
         return i_target;
+    }
+
+    public void CatchedFunc()
+    {
+        if (joyconInput != null && IsJoycon) joyconInput.Vibrate(500);
     }
 
     public void SetCharacterAngle(float i_angle)

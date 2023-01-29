@@ -4,7 +4,6 @@ using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Assertions.Must;
-using static UnityEditor.Progress;
 
 [RequireComponent(typeof(Rigidbody2D))]
 public class ChopSticksController : MonoBehaviour
@@ -79,13 +78,16 @@ public class ChopSticksController : MonoBehaviour
         if (!IsJoycon)
         {
             MouseDeltaPos = playerInput.ChopStick.MouseInput.ReadValue<Vector2>();
+            MouseDeltaPos = new Vector2(Mathf.Clamp(MouseDeltaPos.x, -15, 15f), Mathf.Clamp(MouseDeltaPos.y, -15, 15));
         }
         else
         {
-            Vector3 joyconV = joyconInput.GyroVector_Delta;
-            float JoyX = Mathf.Abs(joyconV.y / 200f) >= 0.6f ? Mathf.Clamp(joyconV.y / 200f, -1, 1) : 0;
-            float JoyY = Mathf.Abs(joyconV.z / 200f) >= 0.6f ? Mathf.Clamp(joyconV.z / 200f, -1, 1) : 0;
-            MouseDeltaPos = new Vector2(JoyX, JoyY)*-10f;
+            Vector3 joyconV = joyconInput.GyroQuaternion_Delta;
+            float JoyX = Mathf.Abs(joyconV.y) >= 30f ? Mathf.Clamp(joyconV.y / 90f, -1, 1) : 0;
+            float JoyY = Mathf.Abs(joyconV.x) >= 30f ? Mathf.Clamp(joyconV.x / 90f, -1, 1) : 0;
+            //float JoyX = Mathf.Abs(joyconV.y / 200f) >= 0.6f ? Mathf.Clamp(joyconV.y / 200f, -1, 1) : 0;
+            //float JoyY = Mathf.Abs(joyconV.z / 200f) >= 0.6f ? Mathf.Clamp(joyconV.z / 200f, -1, 1) : 0;
+            MouseDeltaPos = new Vector2(JoyX, JoyY)*-15f;
 
             if (!this.GameStarted || !this.CanMove) return;
             if (joyconInput.accel.x <= -3f) ChopStickGet();
@@ -112,12 +114,14 @@ public class ChopSticksController : MonoBehaviour
     void ChopStickGet()
     {
         if (!this.GameStarted || !this.CanMove) return;
+        if (joyconInput != null && IsJoycon) joyconInput.Vibrate(100);
         Collider2D[] hitObj = Physics2D.OverlapCircleAll(this.transform.position, ClickRange, CollisionDetect);
         if (hitObj.Count() == 1)
         {
             if (hitObj[0].transform.tag.Equals("Chili"))
             {
                 Debug.Log("Got it!");
+                if (hitObj[0].GetComponent<ChiliPepperController>() != null) hitObj[0].GetComponent<ChiliPepperController>().CatchedFunc();
                 if (MainGameController.mainController != null)
                 {
                     MainGameController.mainController.ChopsticksWin();

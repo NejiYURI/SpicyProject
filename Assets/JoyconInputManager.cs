@@ -14,6 +14,8 @@ public class JoyconInputManager : MonoBehaviour
     public Vector3 GyroQuaternion;
     public Vector3 GyroQuaternion_Old;
     public Vector3 GyroQuaternion_Delta;
+
+    public Vector3 QuaternionOffset;
     private bool Activating;
 
     void Start()
@@ -48,25 +50,17 @@ public class JoyconInputManager : MonoBehaviour
                 Debug.Log(string.Format("Stick x: {0:N} Stick y: {1:N}", j.GetStick()[0], j.GetStick()[1]));
 
                 // Joycon has no magnetometer, so it cannot accurately determine its yaw value. Joycon.Recenter allows the user to reset the yaw value.
-                //j.Recenter();
+             
                 GyroVector_Delta = Vector3.zero;
                 GyroQuaternion_Delta = Vector3.zero;
                 GyroQuaternion_Old = j.GetVector().eulerAngles;
             }
-            // GetButtonDown checks if a button has been released
-            if (j.GetButtonUp(Joycon.Button.SHOULDER_2))
-            {
-                Debug.Log("Shoulder button 2 released");
-            }
-            // GetButtonDown checks if a button is currently down (pressed or held)
-            if (j.GetButton(Joycon.Button.SHOULDER_2))
-            {
-                Debug.Log("Shoulder button 2 held");
-            }
+           
 
             if (j.GetButtonDown(Joycon.Button.DPAD_DOWN))
             {
                 Debug.Log("Rumble");
+                j.Recenter();
                 j.SetRumble(160, 320, 0.6f, 200);
             }
 
@@ -74,7 +68,7 @@ public class JoyconInputManager : MonoBehaviour
             accel = j.GetAccel();
 
             GyroQuaternion = j.GetVector().eulerAngles;
-            GyroQuaternion_Delta = GyroQuaternion - GyroQuaternion_Old;
+            GyroQuaternion_Delta = GetVDelta(GyroQuaternion+ QuaternionOffset, GyroQuaternion_Old);
             GyroVector = j.GetGyro();
             float Gx = (Mathf.Abs(GyroVector.x) > 0.03 ? GyroVector.x : 0) + GyroVector_Delta.x;
             float Gy = (Mathf.Abs(GyroVector.y) > 0.03 ? GyroVector.y : 0) + GyroVector_Delta.y;
@@ -85,5 +79,27 @@ public class JoyconInputManager : MonoBehaviour
         {
             Debug.Log("No Joycon");
         }
+    }
+
+    private Vector3 GetVDelta(Vector3 v1, Vector3 v2)
+    {
+        return new Vector3(GetAngelDelta(v1.x, v2.x), GetAngelDelta(v1.y, v2.y), GetAngelDelta(v1.z, v2.z));
+    }
+
+    public void Vibrate(int FTime)
+    {
+        if (joycons.Count > 0)
+        {
+            Joycon j = joycons[jc_ind];
+            j.SetRumble(160, 320, 0.6f, FTime);
+        }
+    }
+
+    private float GetAngelDelta(float f1, float f2)
+    {
+        float rslt = f1 - f2;
+        if (rslt <= 180) return rslt;
+        if (rslt >= 0) return rslt - 360f;
+        return rslt + 360;
     }
 }
