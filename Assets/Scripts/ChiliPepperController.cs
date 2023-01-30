@@ -109,6 +109,7 @@ public class ChiliPepperController : MonoBehaviour
     public void GameOverFunction(bool IsChop)
     {
         this.CanMove = false;
+        this.rg.velocity = Vector2.zero;
     }
 
     Vector2 ForceConverter(Vector2 i_target, float i_angle)

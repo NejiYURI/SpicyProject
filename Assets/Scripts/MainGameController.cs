@@ -44,7 +44,7 @@ public class MainGameController : MonoBehaviour
 
     private void Start()
     {
-        Cursor.lockState = CursorLockMode.Locked;
+       
         StartCoroutine(StartCounter());
         Dictionary<int, List<Collider2D>> LayerCollider = new Dictionary<int, List<Collider2D>>();
         for (int layercnt = 0; layercnt < 2; layercnt++)
@@ -88,6 +88,7 @@ public class MainGameController : MonoBehaviour
             }
             else
             {
+                Cursor.lockState = CursorLockMode.Locked;
                 Destroy(JoyconControl);
             }
             if (ChiliPepper != null) ChiliPepper.IsJoycon = GameSettingScript.instance.IsJoycon;
