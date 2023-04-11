@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -7,6 +8,9 @@ public class BackGroundController : MonoBehaviour
 {
     public SpriteRenderer SoupBg;
 
+    public AudioSource BGMPlayer;
+
+    [SerializeField]
     private float Ratio;
 
     private float SpawnCounter;
@@ -25,6 +29,7 @@ public class BackGroundController : MonoBehaviour
         if (GameEventManager.instance != null)
         {
             GameEventManager.instance.SpicyRate.AddListener(GetSpicyRate);
+            GameEventManager.instance.GameStart.AddListener(GameStart);
         }
         SpawnCounter = 0;
     }
@@ -41,7 +46,13 @@ public class BackGroundController : MonoBehaviour
                 SpawnBubble();
                 SpawnCounter = 0;
             }
+            if (BGMPlayer != null) BGMPlayer.pitch = Mathf.Lerp(1f, 2f, (Ratio-0.7f)/0.55f);
         }
+    }
+
+    void GameStart()
+    {
+        if (BGMPlayer != null) BGMPlayer.Play();
     }
 
     void GetSpicyRate(float cur_val, float Max_val)

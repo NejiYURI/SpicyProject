@@ -24,6 +24,8 @@ public class ChopSticksController : MonoBehaviour
     public Camera FollowCam;
 
     public Animator ChopsticksAnimator;
+    public AudioClip GetAudio;
+    public AudioClip FoodFlyAudio;
 
 
     private Rigidbody2D rg;
@@ -78,7 +80,7 @@ public class ChopSticksController : MonoBehaviour
         if (!IsJoycon)
         {
             MouseDeltaPos = playerInput.ChopStick.MouseInput.ReadValue<Vector2>();
-            MouseDeltaPos = new Vector2(Mathf.Clamp(MouseDeltaPos.x, -15, 15f), Mathf.Clamp(MouseDeltaPos.y, -15, 15));
+            MouseDeltaPos = new Vector2(Mathf.Clamp(MouseDeltaPos.x, -10, 10), Mathf.Clamp(MouseDeltaPos.y, -10, 10));
         }
         else
         {
@@ -134,6 +136,7 @@ public class ChopSticksController : MonoBehaviour
             {
                 if (!obj.transform.tag.Equals("Chili") && obj.GetComponent<FoodScript>()!=null)
                 {
+                    if (AudioController.instance) AudioController.instance.PlaySound(FoodFlyAudio,0.2f);
                     obj.GetComponent<FoodScript>().FoodPickUp();
                     break;
                 }
@@ -170,6 +173,7 @@ public class ChopSticksController : MonoBehaviour
     IEnumerator StopCounter()
     {
         this.CanMove = false;
+        if (AudioController.instance) AudioController.instance.PlaySound(GetAudio,0.3f);
         if (ChopsticksAnimator != null)
         {
             ChopsticksAnimator.SetTrigger("ChopsticksGrab");

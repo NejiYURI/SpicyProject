@@ -10,6 +10,7 @@ public class StartMenuScript : MonoBehaviour
     public GameObject chiliObj;
     public Transform SpawnPoint;
     public Image JoystickImg;
+    public AudioClip DropSound;
     private bool IsPress;
 
     private void Awake()
@@ -55,6 +56,7 @@ public class StartMenuScript : MonoBehaviour
 
     IEnumerator StartCounter()
     {
+        if (AudioController.instance) AudioController.instance.PlaySound(DropSound);
         yield return new WaitForSeconds(1);
         SceneManager.LoadScene("PlayScene");
     }

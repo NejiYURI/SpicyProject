@@ -14,6 +14,9 @@ public class MainGameController : MonoBehaviour
 {
     public static MainGameController mainController;
     public float CountDownSecond;
+    public AudioClip CountDownSound;
+    public AudioClip ChiliWinSound;
+    public AudioClip ChopsticksSound;
     public List<Collider2D> PlayerColliderList;
 
     public float SpawnRadius = 5f;
@@ -121,6 +124,7 @@ public class MainGameController : MonoBehaviour
 
     public void ChopsticksWin()
     {
+        if (AudioController.instance) AudioController.instance.PlaySound(ChopsticksSound);
         if (GameEventManager.instance != null)
         {
             StopCoroutine(SpicyRateCoroutine);
@@ -131,6 +135,7 @@ public class MainGameController : MonoBehaviour
 
     public void ChiliWin()
     {
+        if (AudioController.instance) AudioController.instance.PlaySound(ChiliWinSound);
         if (GameEventManager.instance != null)
         {
             Cursor.lockState = CursorLockMode.None;
@@ -155,6 +160,7 @@ public class MainGameController : MonoBehaviour
         int TmpCnt = (int)CountDownSecond;
         for (int i = TmpCnt; i > 0; i--)
         {
+            if (AudioController.instance) AudioController.instance.PlaySound(CountDownSound);
             if (counterControl != null) counterControl.CounterSet(i.ToString("#"));
             yield return new WaitForSeconds(1);
         }
